@@ -257,6 +257,7 @@ class MainGame extends Phaser.Scene {
                     this.backButton.on('pointerdown', () => {
                         this.backButton.play('backbuttonclick')
                         this.backButton.once('animationcomplete', () => {
+                        this.resetGameState()
                         this.scene.start('MainMenu')
                         })
                     })
@@ -353,7 +354,6 @@ spawnEnemies() {
 
 createEnemy(x, y, type) {
     let enemy
-
     if (type === 'enemy1') {
         enemy = this.physics.add.sprite(x, y, "Enemy1")
         enemy.setScale(3)
@@ -633,27 +633,36 @@ createEnemy(x, y, type) {
 
     attackHitEnemy(attack, enemy){
         if (this.enemiesType2 && this.enemiesType2.getChildren) {
+            this.enemiesType2.getChildren().forEach((enemy) => {
             if (this.physics.overlap(attack, enemy) && this.attack.body.touching && enemy.body.touching)
                     enemy.destroy()
-            }
+            })
+        }
         if (this.enemiesType1 && this.enemiesType1.getChildren) {
+            this.enemiesType1.getChildren().forEach((enemy) => {
             if (this.physics.overlap(attack, enemy) && this.attack.body.touching && enemy.body.touching)
                     enemy.destroy()
-            }
+            })
+        }
         if (this.enemiesType3 && this.enemiesType3.getChildren) {
+            this.enemiesType3.getChildren().forEach((enemy) => {
             if (this.physics.overlap(attack, enemy) && this.attack.body.touching && enemy.body.touching)
                     if(this.hit > 0 && this.hitis == false){
-                        this.hitis == true 
+                        this.hitis = true 
                         this.hit--
                         this.time.addEvent({
                             delay: 2000,
                             callback: () => {
-                                this.hitis == false 
+                                this.hitis = false 
                             },
                         })
                     }
-                    else if(this.hit <= 0) enemy.destroy()
-            }
+                    else if(this.hit <= 0){
+                        this.hit = 3
+                        enemy.destroy()
+                    }
+            })
+        }
     }
 
     enemyTouchPlayer(player, enemy){
@@ -935,7 +944,6 @@ createEnemy(x, y, type) {
                         this.canAttack = true
                     },
                 })
-        
                 enemy.once('animationcomplete', () => {
                     enemy.x = (enemy.flipX ? enemy.x - 60 : enemy.x + 60)
                     enemy.play('Enemy2_idle')
@@ -960,25 +968,13 @@ createEnemy(x, y, type) {
                 enemy.previousAnimKey = enemy.anims.currentAnim.key
             }
             let distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, this.player.x, this.player.y)
-          
-            if (distance < 400 && this.canAttack) {
-                this.canAttack = false
-                enemy.play('enemy3atk')
-                this.time.addEvent({
-                    delay: 2000,
-                    callback: () => {
-                        this.canAttack = true
-                    },
-                })
-                enemy.once('animationcomplete', () => {
-                    enemy.play('enemy3idle')
-                })
-            } else if (distance >= 100 && distance < 400) {
+            if (distance < 400) {
+                if(enemy.anims.currentAnim.key !== 'enemy3atk') enemy.play('enemy3atk')
                 enemy.setVelocityX(this.player.x < enemy.x ? -gameSettings.enemySpeed : gameSettings.enemySpeed)
                 enemy.setFlipX(this.player.x > enemy.x)
-            } else if(distance > 400){
+            } else if(distance >= 400){
+                if(enemy.anims.currentAnim.key !== 'enemy3idle') enemy.play('enemy3idle')
                 enemy.setVelocityX(0)
-                enemy.play('enemy3idle')
             }
         })
     }

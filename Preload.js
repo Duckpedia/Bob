@@ -307,15 +307,15 @@ class Preload extends Phaser.Scene {
         this.anims.create({
             key: "enemy3idle",
             frames: this.anims.generateFrameNumbers("enemy3idle"),
-            frameRate: 10,
-            repeat: 0
+            frameRate: 8,
+            repeat: -1
         })
 
         this.anims.create({
             key: "enemy3atk",
             frames: this.anims.generateFrameNumbers("enemy3atk"),
             frameRate: 10,
-            repeat: 0
+            repeat: -1
         })
 
         
