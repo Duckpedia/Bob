@@ -107,7 +107,7 @@ class MainGame extends Phaser.Scene {
         this.physics.world.enable(this.player)
         this.player.setCollideWorldBounds(true)
 
-        this.portal = this.physics.add.sprite(this.map.widthInPixels - 60, config.height - 370, "portal")
+        this.portal = this.physics.add.sprite(this.map.widthInPixels - 60, config.height - 270, "portal")
         this.portal.body.setAllowGravity(false)
         this.portal.setScale(3)
         this.portal.setFlipX(true)
